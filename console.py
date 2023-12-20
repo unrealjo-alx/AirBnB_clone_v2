@@ -126,7 +126,8 @@ class HBNBCommand(cmd.Cmd):
 
 def do_create(self, arg):
     """
-    Create a new instance of class BaseModel and save it to the JSON file.
+    Create a new instance of a class with given
+        parameters and save it to the JSON file.
     """
     arguments = arg.split()
 
@@ -135,11 +136,11 @@ def do_create(self, arg):
         return
 
     class_name = arguments[0]
-    if class_name not in classes:
+    if class_name not in self.classes:
         print("** class doesn't exist **")
         return
 
-    new_instance = classes[class_name]()
+    new_instance = self.classes[class_name]()
     instance_attributes = {}
 
     for argument in arguments[1:]:
@@ -152,12 +153,11 @@ def do_create(self, arg):
 
         if value.startswith('"') and value.endswith('"'):
             value = value[1:-1]
-
-        try:
-            if value.isnumeric():
+        elif value.isnumeric():
+            try:
                 value = eval(value)
-        except (ValueError, NameError):
-            continue
+            except ValueError:
+                pass
 
         instance_attributes[key] = value
         setattr(new_instance, key, value)
